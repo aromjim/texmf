@@ -1,0 +1,195 @@
+\NeedsTeXFormat{LaTeX2e}
+\newcommand*{\LastVersion}{2017/02/01}
+\ProvidesPackage{plandocente}[\LastVersion Infraestructura para los planes docentes de las asignaturas]
+
+\RequirePackage{pgfopts}
+
+\RequirePackage{csquotes}
+
+\RequirePackage[backend=biber]{biblatex}
+
+\RequirePackage{tcolorbox}
+\tcbuselibrary{skins, breakable, raster}
+
+\RequirePackage{bookmark}
+
+\RequirePackage{hyperref}
+\definecolor{enlace}{gray}{0.25}
+\hypersetup{%
+  unicode,
+  colorlinks,
+  urlcolor=enlace,
+  pdfsubject=Plan docente,
+  pdfdisplaydoctitle}
+
+
+\pgfkeys{
+  /Plan docente/.cd,
+  version/.initial=\LastVersion,
+}
+
+\ProcessPgfPackageOptions{/Plan docente}
+
+\newcommand{\version}[2]{
+  \pgfkeys{/Plan docente/version/.get=\Plandocente@version}
+  \ifnum\pdf@strcmp{#1}{\Plandocente@version}<1 #2\fi}
+
+\version{2017/02/01}{
+  \pgfkeys{
+    /Plan docente/Cabecera/.cd,
+    asignatura cabecera/.store in=\asignaturacabecera,
+    asignatura/.store in=\asignatura,
+    asignatura/.value required,
+    asignatura/.forward to=/Plan docente/Cabecera/asignatura cabecera,
+    curso académico/.store in=\cursoacademico,
+    curso académico/.value required,
+    departamento/.store in=\departamento,
+    departamento/.value required,
+    secretaría/.store in=\secretaria,
+    secretaría/.value required,
+    titulación/.store in=\titulacion,
+    titulación/.value required,
+    tipo de asignatura/.store in=\tipoasignatura,
+    tipo de asignatura/.value required,
+    curso/.store in=\curso,
+    curso/.value required,
+    periodo/.store in=\periodo,
+    periodo/.value required,
+    créditos/.store in=\creditos,
+    créditos/.value required,
+    página web/.store in=\paginaweb,
+    página web/.value required
+  }
+
+  \definecolor{sombreadocabecera}{gray}{0.85}
+
+  \newtcolorbox{cabecera}{
+    enhanced,
+    colback=sombreadocabecera,
+    arc=3mm,
+    frame hidden,
+    lower separated=false,
+    sidebyside,
+    lefthand ratio=0.33
+  }
+
+  \definecolor{sombreadotítulosección}{gray}{0.9}
+
+  \newtcolorbox{sección}[2][]{%
+    enhanced,
+    before={\currentpdfbookmark{#2}{#2}\par\pagebreak[0]\noindent},
+    after={\par},
+    colback=white,
+    colframe=black,
+    boxrule=0.25mm,
+    arc=3mm,
+    colbacktitle=sombreadotítulosección,
+    coltitle=black,
+    fonttitle=\Large\bfseries\scshape,
+    title=#2,
+    attach boxed title to top left={%
+      xshift=2mm,
+      yshift*=-\tcboxedtitleheight-2mm
+    },
+    boxed title style={%
+      enhanced,
+      frame hidden,
+      arc=3mm,
+      colframe=sombreadotítulosección
+    },
+    breakable,
+    #1
+  }
+  
+  \newcommand*{\datosbásicos}[2][0pt]{%
+    \pgfkeys{%
+      /Plan docente/Cabecera/.cd,
+      #2
+    }
+  
+    \hypersetup{%
+      pdftitle=\asignatura,
+    }
+
+    \begin{cabecera}
+      \includegraphics{marca-tinta-negro}
+      \tcblower {\Huge\bfseries\scshape \asignaturacabecera}
+      \par
+      \bigskip {\bfseries\itshape Curso académico \cursoacademico}
+    \end{cabecera}
+
+    \begin{sección}{Datos básicos de la asignatura}
+      \begin{tcbitemize}[
+        empty,
+        raster columns=2,
+        raster valign=top,
+        top=0pt,
+        bottom=0pt,
+        raster row skip=0pt,
+        raster force size=false,
+        raster odd column/.style={add to width=-#1},
+        raster even column/.style={add to width=#1}
+        ]
+        \tcbitem Departamento al que está adscrita:
+        \tcbitem \departamento{} (Secretaría: \secretaria)
+        \tcbitem Titulación en la que se imparte:
+        \tcbitem \titulacion
+        \tcbitem Tipo de asignatura:
+        \tcbitem \tipoasignatura
+        \tcbitem Curso en el que se imparte:
+        \tcbitem \curso
+        \tcbitem Periodo en el que se imparte:
+        \tcbitem \periodo
+        \tcbitem Número de créditos de que consta:
+        \tcbitem \creditos
+        \tcbitem Página web de la asignatura:
+        \tcbitem \url{\paginaweb}
+      \end{tcbitemize}
+    \end{sección}
+  }
+
+
+  % Configuración de los profesores
+  \pgfkeys{
+    /Plan docente/Profesor/.cd,
+    nombre/.store in=\nombre,
+    ubicación/.store in=\ubicacion,
+    correo-e/.store in=\correoe,
+    página web/.store in=\paginaweb
+  }
+
+  \newcommand*{\profesor}[1]{
+    \pgfkeys{
+      /Plan docente/Profesor/.cd,
+      #1
+    }
+
+    \nombre
+
+    \smallskip\quad
+    \begin{tabular}{ll}
+      Ubicación:             & \ubicacion\\
+      Dirección de correo-e: & \nolinkurl{\correoe}\\
+      Página web personal:   & \url{\paginaweb}
+    \end{tabular}
+  }
+
+
+  % Bibliografía
+  \ExecuteBibliographyOptions{defernumbers, giveninits, doi=false, autolang=hyphen}
+  \DefineBibliographyStrings{spanish}{andothers={y~otros}}
+  \AtEveryBibitem{
+    \clearlist{language}
+  }
+  \defbibenvironment{bibliography}
+  {\list
+    {}
+    {\setlength{\leftmargin}{\bibhang}%
+      \setlength{\itemindent}{-\leftmargin}%
+      \setlength{\itemsep}{\bibitemsep}%
+      \setlength{\parsep}{\bibparsep}}}
+  {\endlist}
+  {\item}
+}
+
+\endinput
