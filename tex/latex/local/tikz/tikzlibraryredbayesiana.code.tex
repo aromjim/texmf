@@ -1,0 +1,31 @@
+\usetikzlibrary{shapes}
+\usetikzlibrary{positioning}
+\usetikzlibrary{arrows.meta}
+
+\tikzset{
+  aleatoria/.style={
+    ellipse,
+    fill=white,
+    draw=black
+  },
+  discreta/.style={
+    double=none
+  },
+  observable/.style={
+    fill=lightgray
+  },
+  evidencia/.style 2 args={
+    label={[draw, fill=white, rounded corners, , inner sep=2pt, label distance=-5pt, #2]-10:#1}
+  },
+  fuerte/.style=solid,
+  débil/.style=densely dotted
+}
+
+% \edge [options] {inputs} {outputs}
+\newcommand{\arco}[3][]{
+  \foreach \x in {#2} {
+    \foreach \y in {#3} {
+      \draw[-Stealth, #1] (\x) -- (\y);
+    };
+  };
+}
