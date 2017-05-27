@@ -1,0 +1,278 @@
+\NeedsTeXFormat{LaTeX2e}
+\newcommand*{\Mathematics@LastVersion}{2017/03/15}
+\ProvidesPackage{mathematics}
+[\Mathematics@LastVersion Infrastructure for writing mathematical expressions]
+
+
+% Check if package polyglossia has been loaded
+\@ifpackageloaded{polyglossia}{}{%
+  \PackageError{Mathematics}{Package polyglossia has to be previously loaded}{}
+}
+
+
+% Load required packages
+\RequirePackage{pgfopts}
+\RequirePackage{xstring}
+\RequirePackage{amsmath}
+\RequirePackage{mathtools}
+
+
+% Set package keys
+\pgfkeys{
+  /Mathematics/.cd,
+  version/.initial=\Mathematics@LastVersion
+}
+\ProcessPgfPackageOptions{/Mathematics}
+
+
+% Define version command
+\newcommand{\Mathematics@version}[2]{
+  \pgfkeys{/Mathematics/version/.get=\@Mathematics@version}
+  \ifnum\pdf@strcmp{#1}{\@Mathematics@version}<1 #2\fi
+}
+
+
+%%% Theorem like environments
+
+\Mathematics@version{2017/03/15}{
+
+  \IfStrEq{\xpg@main@language}{spanish}{
+    \newtheorem{Definición}{Definición}
+    \newtheorem{Proposición}{Proposición}
+    \newtheorem{Teorema}{Teorema}
+  }{}
+
+  \IfStrEq{\xpg@main@language}{english}{
+    \newtheorem{Definition}{Definition}
+    \newtheorem{Proposition}{Proposition}
+    \newtheorem{Theorem}{Theorem}
+  }{}
+
+}
+
+  
+%%% Mathematical constants
+  
+\Mathematics@version{2017/03/15}{
+
+  \newcommand*{\e}{\mathrm{e}}
+
+}
+
+
+%%% Mathematical functions
+
+\Mathematics@version{2017/03/15}{
+
+  \newcommand*{\Mathematics@ExpFunction}[1]{\e^{#1}}
+
+  
+  \IfStrEq{\xpg@main@language}{spanish}{
+    \let\FunciónExp\Mathematics@ExpFunction
+    \DeclareMathOperator{\sen}{sen}
+  }{}
+
+  
+  \IfStrEq{\xpg@main@language}{english}{
+    \let\ExpFunction\Mathematics@ExpFunction
+  }{}
+
+}
+
+
+%%% Mathematical operators
+
+\Mathematics@version{2017/03/15}{
+
+  \DeclareMathOperator{\dom}{dom}
+
+  
+  \IfStrEq{\xpg@main@language}{spanish}{
+    \DeclareMathOperator{\máx}{m\acute{a}x}
+    \DeclareMathOperator{\mín}{m\acute{ı}n}
+    \DeclareMathOperator{\argmáx}{arg m\acute{a}x}
+    \DeclareMathOperator{\argmín}{arg m\acute{ı}n}
+  }{}
+
+  
+  \IfStrEq{\xpg@main@language}{english}{
+    \DeclareMathOperator{\argmax}{arg max}
+    \DeclareMathOperator{\argmin}{arg min}
+  }{}
+
+}
+
+
+%%% Mathematical relations
+
+\Mathematics@version{2017/03/15}{
+
+  \newcommand*{\Mathematics@ExtensibleTilde}[2][1.5]{%
+    \mathrel{\overset{#2}{\scalebox{#1}[1]{$∼$}}}
+  }
+
+
+  \IfStrEq{\xpg@main@language}{spanish}{
+    \let\TildeExtensible\Mathematics@ExtensibleTilde
+  }{}
+
+
+  \IfStrEq{\xpg@main@language}{english}{
+    \let\ExtensibleTilde\Mathematics@ExtensibleTilde
+  }{}
+
+}
+
+
+%%% Delimiters
+
+\Mathematics@version{2017/03/15}{
+
+  % Conditional vertical bar
+  \newcommand*\Mathematics@Given{}
+
+  % Auxiliar command to set the right length to the previous conditional bar
+  \newcommand\Mathematics@SetSymbol[1][]{%
+    \nonscript\:#1\vert
+    \allowbreak
+    \nonscript\:
+    \mathopen{}
+  }
+
+  % Parenthesized expression
+  \DeclarePairedDelimiterX\Mathematics@Parenthesis[1](){%
+    \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
+    #1
+  }
+
+  % Angle bracketed expression
+  \DeclarePairedDelimiterX\Mathematics@AngleBrackets[1]⟨⟩{%
+    \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
+    #1
+  }
+
+  % Square bracketed expression
+  \DeclarePairedDelimiterX\Mathematics@SquareBrackets[1][]{%
+    \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
+    #1
+  }
+
+  % Curly bracketed expression
+  \DeclarePairedDelimiterX\Mathematics@CurlyBrackets[1]\{\}{%
+    \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
+    #1
+  }
+
+  % Function application
+  \DeclarePairedDelimiterXPP\Mathematics@ApplyFunction[2]{#1}(){}{%
+    \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
+    #2
+  }
+
+  % Expression without delimiters
+  \DeclarePairedDelimiterX\Mathematics@Expression[1]{.}{.}{%
+    \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
+    #1
+  }
+
+
+  \IfStrEq{\xpg@main@language}{spanish}{
+    \def\Dado{\Mathematics@Given}
+    \let\Paréntesis\Mathematics@Parenthesis
+    \let\Angulares\Mathematics@AngleBrackets
+    \let\Corchetes\Mathematics@SquareBrackets
+    \let\Conjunto\Mathematics@CurlyBrackets
+    \let\AplicaFunción\Mathematics@ApplyFunction
+    \let\Expresión\Mathematics@Expression
+  }{}
+
+
+  \IfStrEq{\xpg@main@language}{english}{
+    \def\Given{\Mathematics@Given}
+    \let\Parenthesis\Mathematics@Parenthesis
+    \let\AngleBrackets\Mathematics@AngleBrackets
+    \let\SquareBrackets\Mathematics@SquareBrackets
+    \let\Set\Mathematics@CurlyBrackets
+    \let\ApplyFunction\Mathematics@ApplyFunction
+    \let\Expression\Mathematics@Expression
+  }{}
+
+}
+
+
+%%% Set theory
+
+\Mathematics@version{2017/03/15}{
+
+  % Power set
+  \DeclarePairedDelimiterXPP\Mathematics@PowerSetOf[1]{\mathcal{P}}(){}{#1}
+
+  % Cardinality
+  \DeclarePairedDelimiterXPP\Mathematics@CardinalityOf[1]{\#}\{\}{}{
+    \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
+    #1
+  }
+  
+
+  \IfStrEq{\xpg@main@language}{spanish}{
+    \let\ConjuntoPotenciaDe\Mathematics@PowerSetOf
+    \let\CardinalidadDe\Mathematics@CardinalityOf
+  }{}
+
+
+  \IfStrEq{\xpg@main@language}{english}{
+    \let\PowerSetOf\Mathematics@PowerSetOf
+    \let\CardinalityOf\Mathematics@CardinalityOf
+  }{}
+
+}
+
+
+%%% Linear algebra
+  
+\Mathematics@version{2017/03/15}{
+
+  % Transpose of a matrix
+  \newcommand*{\Mathematics@TransposeOf}[1]{#1^{T}}
+  
+
+  \IfStrEq{\xpg@main@language}{spanish}{
+    \let\TraspuestaDe\Mathematics@TransposeOf
+  }{}
+
+
+  \IfStrEq{\xpg@main@language}{english}{
+    \let\TransposeOf\Mathematics@TransposeOf
+  }{}
+
+}
+
+
+%%% Probability theory
+
+\Mathematics@version{2017/03/15}{
+
+  % Probability distribution
+  \DeclarePairedDelimiterXPP\Mathematics@ProbDistribution[2]{\mathrm{#1}}(){}{#2}
+
+  % Probability of an event
+  \DeclarePairedDelimiterXPP\Mathematics@ProbabilityOf[1]{ℙ}(){}{%
+    \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
+    #1
+  }
+  
+
+  \IfStrEq{\xpg@main@language}{spanish}{
+    \let\DistribuciónProb\Mathematics@ProbDistribution
+    \let\ProbabilidadDe\Mathematics@ProbabilityOf
+  }{}
+
+
+  \IfStrEq{\xpg@main@language}{english}{
+    \let\ProbDistribution\Mathematics@ProbDistribution
+    \let\ProbabilityOf\Mathematics@ProbabilityOf
+  }{}
+
+}
+
+\endinput
