@@ -43,9 +43,11 @@
   }{}
 
   \IfStrEq{\xpg@main@language}{english}{
-    \newtheorem{Definition}{Definition}
-    \newtheorem{Proposition}{Proposition}
-    \newtheorem{Theorem}{Theorem}
+    \@ifclassloaded{beamer}{}{
+      \newtheorem{Definition}{Definition}
+      \newtheorem{Proposition}{Proposition}
+      \newtheorem{Theorem}{Theorem}
+    }
   }{}
 
 }
