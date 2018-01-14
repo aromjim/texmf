@@ -1,8 +1,7 @@
 \NeedsTeXFormat{LaTeX2e}
-\newcommand*{\Mathematics@LastVersion}{2017/03/15}
+\newcommand*{\Mathematics@LastVersion}{2017/10/30}
 \ProvidesPackage{mathematics}
 [\Mathematics@LastVersion Infrastructure for writing mathematical expressions]
-
 
 % Check if package polyglossia has been loaded
 \@ifpackageloaded{polyglossia}{}{%
@@ -15,6 +14,7 @@
 \RequirePackage{xstring}
 \RequirePackage{amsmath}
 \RequirePackage{mathtools}
+\RequirePackage{newunicodechar}
 
 
 % Set package keys
@@ -78,6 +78,12 @@
   \IfStrEq{\xpg@main@language}{english}{
     \let\ExpFunction\Mathematics@ExpFunction
   }{}
+
+}
+
+\Mathematics@version{2017/10/30}{
+
+  \newunicodechar{√}{\sqrt}
 
 }
 
@@ -270,7 +276,7 @@
     \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
     #1
   }
-  
+
 
   \IfStrEq{\xpg@main@language}{spanish}{
     \let\DistribuciónProb\Mathematics@ProbDistribution
