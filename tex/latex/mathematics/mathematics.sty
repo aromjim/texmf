@@ -277,4 +277,42 @@
 
 }
 
+\Mathematics@version{2017/10/30}{
+
+  % Expected value of a random variable
+  \DeclarePairedDelimiterXPP\Mathematics@ExpectedValue[2]{𝔼_{#1}}[]{}{%
+    \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
+    #2
+  }
+
+  % Sample average
+  \newcommand*{\Mathematics@SampleAverage}[1]{\wideoverbar{#1}}
+
+  % Variance of a random variable
+  \DeclarePairedDelimiterXPP\Mathematics@Variance[2]{Var_{#1}}(){}{%
+    \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
+    #2
+  }
+
+  % Estimator of a parameter
+  \newcommand*{\Mathematics@Estimator}[1]{\widehat{#1}}
+
+
+  \IfStrEq{\xpg@main@language}{spanish}{
+    \let\Esperanza\Mathematics@ExpectedValue
+    \let\MediaMuestral\Mathematics@SampleAverage
+    \let\Varianza\Mathematics@Variance
+    \let\Estimador\Mathematics@Estimator
+  }{}
+
+
+  \IfStrEq{\xpg@main@language}{english}{
+    \let\ExpectedValue\Mathematics@ExpectedValue
+    \let\SampleAverage\Mathematics@SampleAverage
+    \let\Variance\Mathematics@Variance
+    \let\Estimator\Mathematics@Estimator
+  }{}
+
+}
+
 \endinput
