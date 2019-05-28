@@ -1,0 +1,78 @@
+\DeclareCurrentRelease{}{2019/05/15}
+
+\RequirePackage{expl3}
+\ProvidesExplPackage {correcciones} {2019/05/15} {}
+  {Un paquete para correcciones de trabajos de alumnos}
+
+\RequirePackage{xparse}
+
+\RequirePackage{tcolorbox}
+
+\RequirePackage{siunitx}
+
+
+\keys_define:nn { correcciones }
+  {
+    número~decimales .int_set:N = \l__correcciones_número_decimales_int,
+    número~decimales .initial:n = {2},
+    nota~máxima .fp_set:N = \l__correcciones_nota_máxima_fp,
+    nota~máxima .initial:n = {10},
+    nota .fp_set:N = \l__correcciones_nota_fp,
+    nota .initial:n = {NaN},
+    alumnos .tl_set:N = \l__correcciones_alumnos_tl
+  }
+
+\NewDocumentCommand \configuraCorrecciones { m }
+  { \keys_set:nn { correcciones } { #1 } }
+
+
+\cs_new:Nn \__correcciones_escribe_nota:n
+  {
+    \num
+      [
+        round-mode = places,
+        round-precision = \l__correcciones_número_decimales_int,
+        round-integer-to-decimal,
+        mode = math,
+        detect-all
+      ]
+      {
+        \fp_to_decimal:N #1
+      }
+  }
+
+
+\NewDocumentEnvironment { corrección } { O{} }
+  {
+    \group_begin:
+    \keys_set:nn { correcciones } { #1 }
+    \begin{tcolorbox}
+      [
+        title~filled,
+        fonttitle = \bfseries,
+        title =
+          {
+            \begin{minipage}[t]{.75\textwidth}
+              \seq_set_split:NnV \l_tmpa_seq { ; } \l__correcciones_alumnos_tl
+              \seq_use:Nn \l_tmpa_seq { \\ }
+            \end{minipage}
+          },
+        after~title =
+          {
+            \hfill
+            \begin{minipage}[t]{.25\textwidth}
+              \raggedleft
+              \fp_compare:nNnTF { \l__correcciones_nota_fp } ? { 0 }
+              {}
+              {
+                \__correcciones_escribe_nota:n{\l__correcciones_nota_fp}~
+                (de~\__correcciones_escribe_nota:n{\l__correcciones_nota_máxima_fp})
+              }
+            \end{minipage}
+          }
+      ]
+  }
+  {
+    \end{tcolorbox}
+    \group_end:
+  }
