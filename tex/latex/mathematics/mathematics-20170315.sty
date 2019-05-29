@@ -1,9 +1,6 @@
-\DeclareRelease{}{2017/03/15}{mathematics-20170315.sty}
-\DeclareCurrentRelease{}{2017/10/30}
-
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{mathematics}
-[2017/10/30 Infrastructure for writing mathematical expressions]
+[2017/03/15 Infrastructure for writing mathematical expressions]
 
 
 % Check if package polyglossia has been loaded
@@ -21,20 +18,16 @@
 
 %%% Theorem like environments
 \IfStrEq{\xpg@main@language}{spanish}{
-  \newcounter{mathematics@numteorema}
-  \newtheorem{Definición}[mathematics@numteorema]{Definición}
-  \newtheorem{Proposición}[mathematics@numteorema]{Proposición}
-  \newtheorem{Teorema}[mathematics@numteorema]{Teorema}
-  \newtheorem{Corolario}[mathematics@numteorema]{Corolario}
+  \newtheorem{Definición}{Definición}
+  \newtheorem{Proposición}{Proposición}
+  \newtheorem{Teorema}{Teorema}
 }{}
 
 \IfStrEq{\xpg@main@language}{english}{
   \@ifclassloaded{beamer}{}{
-    \newcounter{mathematics@theoremnum}
-    \newtheorem{Definition}[mathematics@theoremnum]{Definition}
-    \newtheorem{Proposition}[mathematics@theoremnum]{Proposition}
-    \newtheorem{Theorem}[mathematics@theoremnum]{Theorem}
-    \newtheorem{Corollary}[mathematics@theoremnum]{Corollary}
+    \newtheorem{Definition}{Definition}
+    \newtheorem{Proposition}{Proposition}
+    \newtheorem{Theorem}{Theorem}
   }
 }{}
 
@@ -55,8 +48,6 @@
   \let\ExpFunction\Mathematics@ExpFunction
 }{}
 
-\newunicodechar{√}{\sqrt}
-
 
 %%% Mathematical operators
 \DeclareMathOperator{\dom}{dom}
@@ -66,9 +57,6 @@
   \DeclareMathOperator{\mín}{m\acute{ı}n}
   \DeclareMathOperator{\argmáx}{arg m\acute{a}x}
   \DeclareMathOperator{\argmín}{arg m\acute{ı}n}
-  \DeclareMathOperator*{\lím}{l\acute{ı}m}
-  \DeclareMathOperator*{\ínf}{\acute{ı}nf}
-  \DeclareMathOperator*{\mcd}{mcd}
 }{}
   
 \IfStrEq{\xpg@main@language}{english}{
@@ -204,40 +192,14 @@
   #1
 }
 
-% Expected value of a random variable
-\DeclarePairedDelimiterXPP\Mathematics@ExpectedValue[2]{𝔼_{#1}}[]{}{%
-  \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
-  #2
-}
-
-% Sample average
-\newcommand*{\Mathematics@SampleAverage}[1]{\wideoverbar{#1}}
-
-% Variance of a random variable
-\DeclarePairedDelimiterXPP\Mathematics@Variance[2]{Var_{#1}}(){}{%
-  \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
-  #2
-}
-
-% Estimator of a parameter
-\newcommand*{\Mathematics@Estimator}[1]{\widehat{#1}}
-
 \IfStrEq{\xpg@main@language}{spanish}{
   \let\DistribuciónProb\Mathematics@ProbDistribution
   \let\ProbabilidadDe\Mathematics@ProbabilityOf
-  \let\Esperanza\Mathematics@ExpectedValue
-  \let\MediaMuestral\Mathematics@SampleAverage
-  \let\Varianza\Mathematics@Variance
-  \let\Estimador\Mathematics@Estimator
 }{}
 
 \IfStrEq{\xpg@main@language}{english}{
   \let\ProbDistribution\Mathematics@ProbDistribution
   \let\ProbabilityOf\Mathematics@ProbabilityOf
-    \let\ExpectedValue\Mathematics@ExpectedValue
-    \let\SampleAverage\Mathematics@SampleAverage
-    \let\Variance\Mathematics@Variance
-    \let\Estimator\Mathematics@Estimator
 }{}
 
 
