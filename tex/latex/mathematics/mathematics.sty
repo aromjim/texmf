@@ -7,21 +7,15 @@
 [2019/06/11 Infrastructure for writing mathematical expressions]
 
 
-% Check if package polyglossia has been loaded
-\@ifpackageloaded{polyglossia}{}{%
-  \PackageError{Mathematics}{Package polyglossia has to be previously loaded}{}
-}
-
-
 % Load required packages
-\RequirePackage{xstring}
+\RequirePackage{iflang}
 \RequirePackage{amsmath}
 \RequirePackage{mathtools}
 \RequirePackage{newunicodechar}
 
 
 %%% Theorem like environments
-\IfStrEq{\xpg@main@language}{spanish}{
+\IfLanguageName{spanish}{
   \newcounter{mathematics@numteorema}
   \newtheorem{Definición}[mathematics@numteorema]{Definición}
   \newtheorem{Proposición}[mathematics@numteorema]{Proposición}
@@ -29,7 +23,7 @@
   \newtheorem{Corolario}[mathematics@numteorema]{Corolario}
 }{}
 
-\IfStrEq{\xpg@main@language}{english}{
+\IfLanguageName{english}{
   \@ifclassloaded{beamer}{}{
     \newcounter{mathematics@theoremnum}
     \newtheorem{Definition}[mathematics@theoremnum]{Definition}
@@ -47,12 +41,12 @@
 %%% Mathematical functions
 \newcommand*{\Mathematics@ExpFunction}[1]{\e^{#1}}
 
-\IfStrEq{\xpg@main@language}{spanish}{
+\IfLanguageName{spanish}{
   \let\FunciónExp\Mathematics@ExpFunction
   \DeclareMathOperator{\sen}{sen}
 }{}
  
-\IfStrEq{\xpg@main@language}{english}{
+\IfLanguageName{english}{
   \let\ExpFunction\Mathematics@ExpFunction
 }{}
 
@@ -62,7 +56,7 @@
 %%% Mathematical operators
 \DeclareMathOperator{\dom}{dom}
   
-\IfStrEq{\xpg@main@language}{spanish}{
+\IfLanguageName{spanish}{
   \DeclareMathOperator{\máx}{m\acute{a}x}
   \DeclareMathOperator{\mín}{m\acute{ı}n}
   \DeclareMathOperator{\argmáx}{arg m\acute{a}x}
@@ -72,7 +66,7 @@
   \DeclareMathOperator*{\mcd}{mcd}
 }{}
   
-\IfStrEq{\xpg@main@language}{english}{
+\IfLanguageName{english}{
   \DeclareMathOperator{\argmax}{arg max}
   \DeclareMathOperator{\argmin}{arg min}
 }{}
@@ -83,11 +77,11 @@
   \mathrel{\overset{#2}{\scalebox{#1}[1]{$∼$}}}
 }
 
-\IfStrEq{\xpg@main@language}{spanish}{
+\IfLanguageName{spanish}{
   \let\TildeExtensible\Mathematics@ExtensibleTilde
 }{}
 
-\IfStrEq{\xpg@main@language}{english}{
+\IfLanguageName{english}{
   \let\ExtensibleTilde\Mathematics@ExtensibleTilde
 }{}
 
@@ -140,7 +134,7 @@
   #1
 }
 
-\IfStrEq{\xpg@main@language}{spanish}{
+\IfLanguageName{spanish}{
   \def\Dado{\Mathematics@Given}
   \let\Paréntesis\Mathematics@Parenthesis
   \let\Angulares\Mathematics@AngleBrackets
@@ -150,7 +144,7 @@
   \let\Expresión\Mathematics@Expression
 }{}
 
-\IfStrEq{\xpg@main@language}{english}{
+\IfLanguageName{english}{
   \def\Given{\Mathematics@Given}
   \let\Parenthesis\Mathematics@Parenthesis
   \let\AngleBrackets\Mathematics@AngleBrackets
@@ -171,12 +165,12 @@
   #1
 }
 
-\IfStrEq{\xpg@main@language}{spanish}{
+\IfLanguageName{spanish}{
   \let\ConjuntoPotenciaDe\Mathematics@PowerSetOf
   \let\CardinalidadDe\Mathematics@CardinalityOf
 }{}
 
-\IfStrEq{\xpg@main@language}{english}{
+\IfLanguageName{english}{
   \let\PowerSetOf\Mathematics@PowerSetOf
   \let\CardinalityOf\Mathematics@CardinalityOf
 }{}
@@ -186,11 +180,11 @@
 % Transpose of a matrix
 \newcommand*{\Mathematics@TransposeOf}[1]{#1^{T}}
 
-\IfStrEq{\xpg@main@language}{spanish}{
+\IfLanguageName{spanish}{
   \let\TraspuestaDe\Mathematics@TransposeOf
 }{}
 
-\IfStrEq{\xpg@main@language}{english}{
+\IfLanguageName{english}{
   \let\TransposeOf\Mathematics@TransposeOf
 }{}
 
@@ -223,7 +217,7 @@
 % Estimator of a parameter
 \newcommand*{\Mathematics@Estimator}[1]{\widehat{#1}}
 
-\IfStrEq{\xpg@main@language}{spanish}{
+\IfLanguageName{spanish}{
   \let\DistribuciónProb\Mathematics@ProbDistribution
   \let\ProbabilidadDe\Mathematics@ProbabilityOf
   \let\Esperanza\Mathematics@ExpectedValue
@@ -232,7 +226,7 @@
   \let\Estimador\Mathematics@Estimator
 }{}
 
-\IfStrEq{\xpg@main@language}{english}{
+\IfLanguageName{english}{
   \let\ProbDistribution\Mathematics@ProbDistribution
   \let\ProbabilityOf\Mathematics@ProbabilityOf
     \let\ExpectedValue\Mathematics@ExpectedValue
