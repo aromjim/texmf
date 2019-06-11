@@ -1,9 +1,8 @@
-\DeclareRelease{}{2018/07/12}{csusexam-20180712.cls}
-\DeclareCurrentRelease{}{2019/05/30}
+\DeclareCurrentRelease{}{2018/07/12}
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{csusexam}%
-[2019/05/30 Exam class CS and IA Department at Universidad de Sevilla]
+[2018/07/12 Exam class CS and IA Department at Universidad de Sevilla]
 
 \LoadClassWithOptions{memoir}
 
