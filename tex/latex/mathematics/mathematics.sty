@@ -1,239 +1,265 @@
 \DeclareRelease{}{2017/03/15}{mathematics-20170315.sty}
 \DeclareRelease{}{2017/10/30}{mathematics-20171030.sty}
-\DeclareCurrentRelease{}{2019/06/27}
+\DeclareCurrentRelease{}{2019/07/04}
 
 \RequirePackage{expl3}
-\ProvidesExplPackage {mathematics} {2019/06/27} {}
+\ProvidesExplPackage {mathematics} {2019/07/04} {}
   {Infrastructure for writing mathematical expressions}
 
 
 % Load required packages
-\RequirePackage{iflang}
+\RequirePackage{xparse}
+\RequirePackage{tracklang}
 \RequirePackage{amsmath}
 \RequirePackage{mathtools}
 \RequirePackage{newunicodechar}
+\RequirePackage{accents}
+
+
+%%% Translation dictionaries
+\cs_new_protected_nopar:Nn \__mathematics_add_translation:nnn
+  {
+    \prop_put:cnn {l__mathematics_#1_translations_prop} {#2} {#3}
+  }
+\prop_new:N \l__mathematics_spanish_translations_prop
+\prop_new:N \l__mathematics_english_translations_prop
+
+
+%%% Language hooks
+\cs_new_protected:Nn \__mathematics_add_hook:nn
+  {
+    \seq_put_right:cn {l__mathematics_#1_hook} {#2}
+  }
+\seq_new:N \l__mathematics_spanish_hook
+\seq_new:N \l__mathematics_english_hook
 
 
 %%% Theorem like environments
-\IfLanguageName{spanish}{
-  \newcounter{mathematics@numteorema}
-  \newtheorem{Definición}[mathematics@numteorema]{Definición}
-  \newtheorem{Proposición}[mathematics@numteorema]{Proposición}
-  \newtheorem{Teorema}[mathematics@numteorema]{Teorema}
-  \newtheorem{Corolario}[mathematics@numteorema]{Corolario}
-}{}
+\newcounter{__mathematics_theorem_counter}
 
-\IfLanguageName{english}{
-  \@ifclassloaded{beamer}{}{
-    \newcounter{mathematics@theoremnum}
-    \newtheorem{Definition}[mathematics@theoremnum]{Definition}
-    \newtheorem{Proposition}[mathematics@theoremnum]{Proposition}
-    \newtheorem{Theorem}[mathematics@theoremnum]{Theorem}
-    \newtheorem{Corollary}[mathematics@theoremnum]{Corollary}
+\__mathematics_add_hook:nn {spanish}
+  {
+    \newtheorem{Definición}[__mathematics_theorem_counter]{Definición}
+    \newtheorem{Proposición}[__mathematics_theorem_counter]{Proposición}
+    \newtheorem{Teorema}[__mathematics_theorem_counter]{Teorema}
+    \newtheorem{Corolario}[__mathematics_theorem_counter]{Corolario}
   }
-}{}
+
+\__mathematics_add_hook:nn {english}
+  {
+    \newtheorem{Definition}[__mathematics_theorem_counter]{Definition}
+    \newtheorem{Proposition}[__mathematics_theorem_counter]{Proposition}
+    \newtheorem{Theorem}[__mathematics_theorem_counter]{Theorem}
+    \newtheorem{Corollary}[__mathematics_theorem_counter]{Corollary}
+  }
 
   
 %%% Mathematical constants
-\newcommand*{\e}{\mathrm{e}}
+\NewDocumentCommand {\e} {} {\mathrm{e}}
 
 
 %%% Mathematical functions
-\newcommand*{\Mathematics@ExpFunction}[1]{\e^{#1}}
-
-\IfLanguageName{spanish}{
-  \let\FunciónExp\Mathematics@ExpFunction
-  \DeclareMathOperator{\sen}{sen}
-}{}
- 
-\IfLanguageName{english}{
-  \let\ExpFunction\Mathematics@ExpFunction
-}{}
+\NewDocumentCommand{\__mathematics_ExpFunction}{m}{\e^{#1}}
+\__mathematics_add_translation:nnn {spanish} {ExpFunction} {FunciónExp}
+\__mathematics_add_translation:nnn {english} {ExpFunction} {ExpFunction}
 
 \newunicodechar{√}{\sqrt}
 
 
 %%% Mathematical operators
-\DeclareMathOperator{\dom}{dom}
   
-\IfLanguageName{spanish}{
-  \DeclareMathOperator{\máx}{m\acute{a}x}
-  \DeclareMathOperator{\mín}{m\acute{ı}n}
-  \DeclareMathOperator{\argmáx}{arg m\acute{a}x}
-  \DeclareMathOperator{\argmín}{arg m\acute{ı}n}
-  \DeclareMathOperator*{\lím}{l\acute{ı}m}
-  \DeclareMathOperator*{\ínf}{\acute{ı}nf}
-  \DeclareMathOperator*{\mcd}{mcd}
-}{}
+\__mathematics_add_hook:nn {spanish}
+  {
+    \cs_if_free:NTF \dom
+      {\DeclareMathOperator{\dom}{dom}}
+      {\DeclareMathOperator{\spanishdom}{dom}}
+    \DeclareMathOperator{\máx}{m\acute{a}x}
+    \DeclareMathOperator{\mín}{m\acute{ı}n}
+    \DeclareMathOperator*{\argmáx}{arg\,m\acute{a}x}
+    \DeclareMathOperator*{\argmín}{arg\,m\acute{ı}n}
+    \DeclareMathOperator*{\lím}{l\acute{ı}m}
+    \DeclareMathOperator*{\ínf}{\acute{ı}nf}
+    \DeclareMathOperator*{\mcd}{mcd}
+  }
   
-\IfLanguageName{english}{
-  \DeclareMathOperator{\argmax}{arg max}
-  \DeclareMathOperator{\argmin}{arg min}
-}{}
+\__mathematics_add_hook:nn {english}
+  {
+    \cs_if_free:NTF \dom
+      {\DeclareMathOperator{\dom}{dom}}
+      {\DeclareMathOperator{\englishdom}{dom}}
+    \DeclareMathOperator*{\argmax}{arg\,max}
+    \DeclareMathOperator*{\argmin}{arg\,min}
+  }
 
 
 %%% Mathematical relations
-\newcommand*{\Mathematics@ExtensibleTilde}[2][1.5]{%
+\NewDocumentCommand{\__mathematics_ExtensibleTilde}{O{1.5} m}{
   \mathrel{\overset{#2}{\scalebox{#1}[1]{$∼$}}}
 }
-
-\IfLanguageName{spanish}{
-  \let\TildeExtensible\Mathematics@ExtensibleTilde
-}{}
-
-\IfLanguageName{english}{
-  \let\ExtensibleTilde\Mathematics@ExtensibleTilde
-}{}
+\__mathematics_add_translation:nnn {spanish}
+  {ExtensibleTilde} {TildeExtensible}
+\__mathematics_add_translation:nnn {english}
+  {ExtensibleTilde} {ExtensibleTilde}
 
 
 %%% Delimiters
 % Conditional vertical bar
-\newcommand*\Mathematics@Given{}
+\NewDocumentCommand{\__mathematics_Given}{}{}
+\__mathematics_add_translation:nnn {spanish} {Given} {Dado}
+\__mathematics_add_translation:nnn {english} {Given} {Given}
 
 % Auxiliar command to set the right length to the previous conditional bar
-\newcommand\Mathematics@SetSymbol[1][]{%
-  \nonscript\:#1\vert
-  \allowbreak
-  \nonscript\:
-  \mathopen{}
-}
+\cs_new_protected:Nn \__mathematics_Set_Given:n
+  {
+    \RenewDocumentCommand{\__mathematics_Given}{}
+      {
+        \nonscript\:
+        #1\vert
+        \allowbreak
+        \nonscript\:
+        \mathopen{}
+      }
+  }
 
 % Parenthesized expression
-\DeclarePairedDelimiterX\Mathematics@Parenthesis[1](){%
-  \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
-  #1
-}
+\DeclarePairedDelimiterX\__mathematics_Parenthesis[1]()
+  {
+    \__mathematics_Set_Given:n {\delimsize}
+    #1
+  }
+\__mathematics_add_translation:nnn {spanish} {Parenthesis} {Paréntesis}
+\__mathematics_add_translation:nnn {english} {Parenthesis} {Parenthesis}
+
 
 % Angle bracketed expression
-\DeclarePairedDelimiterX\Mathematics@AngleBrackets[1]⟨⟩{%
-  \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
-  #1
-}
+\DeclarePairedDelimiterX\__mathematics_AngleBrackets[1]⟨⟩
+  {
+    \__mathematics_Set_Given:n {\delimsize}
+    #1
+  }
+\__mathematics_add_translation:nnn {spanish} {AngleBrackets} {Angulares}
+\__mathematics_add_translation:nnn {english} {AngleBrackets} {AngleBrackets}
 
 % Square bracketed expression
-\DeclarePairedDelimiterX\Mathematics@SquareBrackets[1][]{%
-  \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
-  #1
-}
+\DeclarePairedDelimiterX\__mathematics_SquareBrackets[1][]
+  {
+    \__mathematics_Set_Given:n {\delimsize}
+    #1
+  }
+\__mathematics_add_translation:nnn {spanish} {SquareBrackets} {Corchetes}
+\__mathematics_add_translation:nnn {english} {SquareBrackets} {SquareBrackets}
 
 % Curly bracketed expression
-\DeclarePairedDelimiterX\Mathematics@CurlyBrackets[1]\{\}{%
-  \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
-  #1
-}
+\DeclarePairedDelimiterX\__mathematics_CurlyBrackets[1]\{\}
+  {
+    \__mathematics_Set_Given:n {\delimsize}
+    #1
+  }
+\__mathematics_add_translation:nnn {spanish} {CurlyBrackets} {Conjunto}
+\__mathematics_add_translation:nnn {english} {CurlyBrackets} {Set}
 
 % Function application
-\DeclarePairedDelimiterXPP\Mathematics@ApplyFunction[2]{#1}(){}{%
-  \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
-  #2
-}
+\DeclarePairedDelimiterXPP\__mathematics_ApplyFunction[2]{#1}(){}
+  {
+    \__mathematics_Set_Given:n {\delimsize}
+    #2
+  }
+\__mathematics_add_translation:nnn {spanish} {ApplyFunction} {AplicaFunción}
+\__mathematics_add_translation:nnn {english} {ApplyFunction} {ApplyFunction}
 
 % Expression without delimiters
-\DeclarePairedDelimiterX\Mathematics@Expression[1]{.}{.}{%
-  \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
-  #1
-}
-
-\IfLanguageName{spanish}{
-  \def\Dado{\Mathematics@Given}
-  \let\Paréntesis\Mathematics@Parenthesis
-  \let\Angulares\Mathematics@AngleBrackets
-  \let\Corchetes\Mathematics@SquareBrackets
-  \let\Conjunto\Mathematics@CurlyBrackets
-  \let\AplicaFunción\Mathematics@ApplyFunction
-  \let\Expresión\Mathematics@Expression
-}{}
-
-\IfLanguageName{english}{
-  \def\Given{\Mathematics@Given}
-  \let\Parenthesis\Mathematics@Parenthesis
-  \let\AngleBrackets\Mathematics@AngleBrackets
-  \let\SquareBrackets\Mathematics@SquareBrackets
-  \let\Set\Mathematics@CurlyBrackets
-  \let\ApplyFunction\Mathematics@ApplyFunction
-  \let\Expression\Mathematics@Expression
-}{}
+\DeclarePairedDelimiterX\__mathematics_Expression[1]{.}{.}
+  {
+    \__mathematics_Set_Given:n {\delimsize}
+    #1
+  }
+\__mathematics_add_translation:nnn {spanish} {Expression} {Expresión}
+\__mathematics_add_translation:nnn {english} {Expression} {Expression}
 
 
 %%% Set theory
 % Power set
-\DeclarePairedDelimiterXPP\Mathematics@PowerSetOf[1]{\mathcal{P}}(){}{#1}
+\DeclarePairedDelimiterXPP\__mathematics_PowerSetOf[1]{\mathcal{P}}(){}{#1}
+\__mathematics_add_translation:nnn {spanish} {PowerSetOf} {ConjuntoPotenciaDe}
+\__mathematics_add_translation:nnn {english} {PowerSetOf} {PowerSetOf}
 
 % Cardinality
-\DeclarePairedDelimiterXPP\Mathematics@CardinalityOf[1]{\#}\{\}{}{
-  \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
-  #1
-}
-
-\IfLanguageName{spanish}{
-  \let\ConjuntoPotenciaDe\Mathematics@PowerSetOf
-  \let\CardinalidadDe\Mathematics@CardinalityOf
-}{}
-
-\IfLanguageName{english}{
-  \let\PowerSetOf\Mathematics@PowerSetOf
-  \let\CardinalityOf\Mathematics@CardinalityOf
-}{}
+\DeclarePairedDelimiterXPP\__mathematics_CardinalityOf[1]{\#}\{\}{}
+  {
+    \__mathematics_Set_Given:n {\delimsize}
+    #1
+  }
+\__mathematics_add_translation:nnn {spanish} {CardinalityOf} {CardinalidadDe}
+\__mathematics_add_translation:nnn {english} {CardinalityOf} {CardinalityOf}
 
 
 %%% Linear algebra
 % Transpose of a matrix
-\newcommand*{\Mathematics@TransposeOf}[1]{#1^{T}}
-
-\IfLanguageName{spanish}{
-  \let\TraspuestaDe\Mathematics@TransposeOf
-}{}
-
-\IfLanguageName{english}{
-  \let\TransposeOf\Mathematics@TransposeOf
-}{}
+\NewDocumentCommand{\__mathematics_TransposeOf}{m}{#1^{T}}
+\__mathematics_add_translation:nnn {spanish} {TransposeOf} {TraspuestaDe}
+\__mathematics_add_translation:nnn {english} {TransposeOf} {TransposeOf}
 
 
 %%% Probability theory
 % Probability distribution
-\DeclarePairedDelimiterXPP\Mathematics@ProbDistribution[2]{\mathrm{#1}}(){}{#2}
+\DeclarePairedDelimiterXPP\__mathematics_ProbDistribution[2]{\mathrm{#1}}(){}
+  {
+    #2
+  }
+\__mathematics_add_translation:nnn {spanish} {ProbDistribution} {DistribuciónProb}
+\__mathematics_add_translation:nnn {english} {ProbDistribution} {ProbDistribution}
 
 % Probability of an event
-\DeclarePairedDelimiterXPP\Mathematics@ProbabilityOf[1]{ℙ}(){}{%
-  \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
-  #1
-}
+\DeclarePairedDelimiterXPP\__mathematics_ProbabilityOf[1]{ℙ}(){}
+  {
+    \__mathematics_Set_Given:n {\delimsize}
+    #1
+  }
+\__mathematics_add_translation:nnn {spanish} {ProbabilityOf} {ProbabilidadDe}
+\__mathematics_add_translation:nnn {english} {ProbabilityOf} {ProbabilityOf}
 
 % Expected value of a random variable
-\DeclarePairedDelimiterXPP\Mathematics@ExpectedValue[2]{𝔼_{#1}}[]{}{%
-  \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
-  #2
-}
+\DeclarePairedDelimiterXPP\__mathematics_ExpectedValueOf[2]
+  {𝔼 \c_math_subscript_token {#1}}[]{}
+  {
+    \__mathematics_Set_Given:n {\delimsize}
+    #2
+  }
+\__mathematics_add_translation:nnn {spanish} {ExpectedValueOf} {EsperanzaDe}
+\__mathematics_add_translation:nnn {english} {ExpectedValueOf} {ExpectedValueOf}
 
 % Sample average
-\newcommand*{\Mathematics@SampleAverage}[1]{\wideoverbar{#1}}
+\NewDocumentCommand{\__mathematics_SampleAverage}{m}{\wideoverbar{#1}}
+\__mathematics_add_translation:nnn {spanish} {SampleAverage} {MediaMuestral}
+\__mathematics_add_translation:nnn {english} {SampleAverage} {SampleAverage}
 
 % Variance of a random variable
-\DeclarePairedDelimiterXPP\Mathematics@Variance[2]{Var_{#1}}(){}{%
-  \renewcommand\Mathematics@Given{\Mathematics@SetSymbol[\delimsize]}
-  #2
-}
+\DeclarePairedDelimiterXPP\__mathematics_VarianceOf[2]
+  {Var \c_math_subscript_token {#1}}(){}
+  {
+    \__mathematics_Set_Given:n {\delimsize}
+    #2
+  }
+\__mathematics_add_translation:nnn {spanish} {VarianceOf} {VarianzaDe}
+\__mathematics_add_translation:nnn {english} {VarianceOf} {VarianceOf}
 
 % Estimator of a parameter
-\newcommand*{\Mathematics@Estimator}[1]{\widehat{#1}}
-
-\IfLanguageName{spanish}{
-  \let\DistribuciónProb\Mathematics@ProbDistribution
-  \let\ProbabilidadDe\Mathematics@ProbabilityOf
-  \let\Esperanza\Mathematics@ExpectedValue
-  \let\MediaMuestral\Mathematics@SampleAverage
-  \let\Varianza\Mathematics@Variance
-  \let\Estimador\Mathematics@Estimator
-}{}
-
-\IfLanguageName{english}{
-  \let\ProbDistribution\Mathematics@ProbDistribution
-  \let\ProbabilityOf\Mathematics@ProbabilityOf
-    \let\ExpectedValue\Mathematics@ExpectedValue
-    \let\SampleAverage\Mathematics@SampleAverage
-    \let\Variance\Mathematics@Variance
-    \let\Estimator\Mathematics@Estimator
-}{}
+\NewDocumentCommand{\__mathematics_Estimator}{m}{\widehat{#1}}
+\__mathematics_add_translation:nnn {spanish} {Estimator} {Estimador}
+\__mathematics_add_translation:nnn {english} {Estimator} {Estimator}
 
 
-\endinput
+%%% Process each language
+\ForEachTrackedLanguage{\__mathematics_tracked_language}
+{
+  \exp_args:No \prop_map_inline:cn
+  {l__mathematics_ \__mathematics_tracked_language _translations_prop}
+  {
+    \cs_new_eq:cc {#2} {__mathematics_#1}
+  }
+  \exp_args:No \seq_map_inline:cn
+  {l__mathematics_ \__mathematics_tracked_language _hook}
+  {
+    #1
+  }
+}
